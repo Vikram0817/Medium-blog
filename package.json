@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@vikram_chaudhary/common": "^1.0.0",
+    "react-router-dom": "^6.22.2"
+  }
+}
