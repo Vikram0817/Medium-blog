@@ -1,11 +1,11 @@
-import React from 'react'
 
 interface props {
-    label: string
+    label: string;
+    onClick: () => void;
 }
-function Button({label}: props) {
+function Button({label, onClick}: props) {
   return (
-    <button className='border rounded-2xl bg-black text-white p-1 w-1/2 hover:bg-slate-400'>{label}</button>
+    <button onClick={onClick} className='border rounded-2xl bg-black text-white p-1 w-1/2 hover:bg-slate-400'>{label}</button>
   )
 }
 

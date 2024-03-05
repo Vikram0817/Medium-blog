@@ -40,7 +40,8 @@ userRouter.post("/signup", async (c) => {
       const token = await sign({id: user.id}, c.env.JWT_KEY);
       return c.json({
         token: `Bearer ${token}`,
-        user: user
+        user: user,
+        response: "Signed up successfully!"
       })
     }else{
       return c.json({"response": "Enable to signup! try again."})
@@ -48,6 +49,7 @@ userRouter.post("/signup", async (c) => {
 
   } catch(e) {
     c.status(403);
+    return c.json({response: "user can not be created or might exist already."})
   }
 })
 
@@ -79,7 +81,8 @@ userRouter.post("/signin", async(c) => {
       const token = await sign({id: user.id}, c.env.JWT_KEY);
       return c.json({
         token: `Bearer ${token}`,
-        user: user
+        user: user,
+        response: "Signed in successfully!"
       })
     }else{
       return c.json({"response": "Wrong password!"})

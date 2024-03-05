@@ -6,7 +6,8 @@
   "dependencies": {
     "@prisma/client": "^5.10.2",
     "@prisma/extension-accelerate": "^1.0.0",
-    "@vikram_chaudhary/common": "^1.0.0",
+    "@vikram_chaudhary/common": "^1.0.2",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "hono": "^4.0.8",
     "jsonwebtoken": "^9.0.2",

@@ -3,10 +3,27 @@ import Input from './Input'
 import Button from './Button'
 import { useState } from 'react'
 import { SignupInput } from '@vikram_chaudhary/common'
+import axios from 'axios'
+import { BACKEND_URL } from '../config'
+import { useNavigate } from 'react-router-dom'
 
 function Auth({type}: {type: "signup" | "signin"}) {
-  const [userInfo, setUserInfo] = useState<SignupInput>({name: "", username: "", password: ""});
-  console.log(userInfo);
+  const [userInfo, setUserInfo] = useState<SignupInput>({name: "", email: "", password: ""});
+  const navigate = useNavigate();
+
+  async function sendRequest() {
+    try {
+      const response = await axios.post(`${BACKEND_URL}api/v1/user/${type === "signin" ? "signin" : "signup"}`, userInfo);
+      const data = response.data;
+      if(data.token){
+        localStorage.setItem("myToken", data.token);
+      }
+      alert(data.response);
+      navigate("/blog")
+    } catch (error) {
+      alert("Failed to create user⚠️")
+    }
+  }
   
   return (
     <div className='h-screen flex flex-col justify-center items-center p-20'>
@@ -22,12 +39,12 @@ function Auth({type}: {type: "signup" | "signin"}) {
             ...userInfo,
             name: e.target.value
           })}
-          } label='Username' placeholder="Enter your username" />
+          } label='email' placeholder="Enter your email" />
       }
       <Input onChange={(e) => {
         setUserInfo({
           ...userInfo,
-          username: e.target.value
+          email: e.target.value
         })
       }} label='Email' placeholder="m@example.com"></Input>
       <Input onChange={(e) => {
@@ -36,7 +53,7 @@ function Auth({type}: {type: "signup" | "signin"}) {
           password: e.target.value
         })
       }} label='Password' type="password" placeholder=""></Input>
-      <Button label='Sign-Up'></Button>
+      <Button onClick={sendRequest} label='Sign-Up'></Button>
     </div>
   )
 }
