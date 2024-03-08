@@ -9,7 +9,7 @@ const blogRouter = new Hono<{
 		DATABASE_URL: string,
         JWT_KEY: string 
 	},
-    Variables: {
+    constiables: {
         userId: string
   }
 }>()
@@ -21,7 +21,7 @@ blogRouter.use("/*", async (c, next) => {
     const decoded = await verify(token, c.env.JWT_KEY);
 
     if(decoded.id){
-      c.set("userId", decoded.id)
+      c.set("jwtPayload", decoded.id)
       await next(); 
     }else{
     c.status(403)
@@ -30,12 +30,12 @@ blogRouter.use("/*", async (c, next) => {
   
   } catch (error) {
     c.status(403);
-    return c.json({msg: "Internal serever error, try again!"})
+    return c.json({msg: "auth failed!"})
   }
 })
 
 blogRouter.post("/", async (c) => {
-    const userId = c.get("userId");
+    const userId = c.get("jwtPayload");
     const body = await c.req.json();
     
     const { success } = createBlog.safeParse(body);
@@ -50,6 +50,13 @@ blogRouter.post("/", async (c) => {
     }).$extends(withAccelerate());
     
     const {title, content} = body;
+
+    // const today = new Date();
+    // const dd = String(today.getDate()).padStart(2, '0');
+    // const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    // const yyyy = today.getFullYear();
+
+    // const date = (dd + '/' + mm + '/' + yyyy).toString();
 
     try {
       const post = await prisma.post.create({
@@ -77,7 +84,18 @@ blogRouter.get("/bulk", async (c) => {
   }).$extends(withAccelerate())
 
   try{
-    const allPosts = await prisma.post.findMany({}); 
+    const allPosts = await prisma.post.findMany({
+      select: {
+        content: true,
+        title: true,
+        id: true,
+        author: { //author is a constible taht we set and selected the name from user tble
+          select: {
+            name: true
+          }
+        }
+      }
+    }); 
     return c.json({"response": allPosts})
   }catch(err){
     c.status(403);

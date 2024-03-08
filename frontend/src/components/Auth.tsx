@@ -33,26 +33,31 @@ function Auth({type}: {type: "signup" | "signin"}) {
         label={type === "signin" ? "Sign-up" : "Sign-in"}
         link={type === "signin" ? '/signup' : "/signin"}
       ></Heading>
-      { type === "signup" &&
+
+      { 
+        type === "signup" &&
         <Input onChange={(e) => {
           setUserInfo({
             ...userInfo,
             name: e.target.value
           })}
-          } label='email' placeholder="Enter your email" />
+          } label='Name' placeholder="Enter your name" />
       }
+
       <Input onChange={(e) => {
         setUserInfo({
           ...userInfo,
           email: e.target.value
         })
       }} label='Email' placeholder="m@example.com"></Input>
+
       <Input onChange={(e) => {
         setUserInfo({
           ...userInfo,
           password: e.target.value
         })
       }} label='Password' type="password" placeholder=""></Input>
+      
       <Button onClick={sendRequest} label='Sign-Up'></Button>
     </div>
   )

@@ -85,6 +85,7 @@ userRouter.post("/signin", async(c) => {
         response: "Signed in successfully!"
       })
     }else{
+      c.status(404);
       return c.json({"response": "Wrong password!"})
     }
 
