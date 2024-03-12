@@ -1,4 +1,3 @@
-
 interface props {
     label: string;
     onClick: () => void;
