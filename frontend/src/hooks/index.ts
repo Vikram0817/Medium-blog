@@ -6,10 +6,10 @@ interface Blog {
     title: string,
     content: string,
     id: string,
+    publishDate: string,
     author: {
         name: string
-    },
-    publishDate: string
+    }
 }
 
 export const useBlogs = () => {
@@ -33,4 +33,27 @@ export const useBlogs = () => {
     return {
         loading, blogData
     }
+}
+
+export const useBlog = ({id}: {id: string}) => {
+    const [loading, setLoading] = useState(true);
+    const [blog, setBlog] = useState<Blog>();
+    
+    const token = localStorage.getItem("myToken");
+
+    useEffect(() => {
+        axios.get(BACKEND_URL + "api/v1/blog/" + id, {
+            headers: {
+                Authorization: token
+            }
+        })
+        .then((res) => {
+            setBlog(res.data.response)
+            setLoading(false);
+        })
+    }, [id]);
+
+    return {
+        loading, blog
+    }   
 }

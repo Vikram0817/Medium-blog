@@ -51,19 +51,20 @@ blogRouter.post("/", async (c) => {
     
     const {title, content} = body;
 
-    // const today = new Date();
-    // const dd = String(today.getDate()).padStart(2, '0');
-    // const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    // const yyyy = today.getFullYear();
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
 
-    // const date = (dd + '/' + mm + '/' + yyyy).toString();
+    const date = (dd + '/' + mm + '/' + yyyy);
 
     try {
       const post = await prisma.post.create({
           data: {
               title: title,
               content: content,
-              authorId: userId
+              authorId: userId,
+              publishDate: date
           }
       })
       return c.json({"response": "Posted successfully!", post});	 
@@ -73,6 +74,7 @@ blogRouter.post("/", async (c) => {
     }
 })
 
+// not finished...
 blogRouter.put("/", async (c) => {
   const body = await c.req.json();
   return c.json({body})
@@ -93,7 +95,8 @@ blogRouter.get("/bulk", async (c) => {
           select: {
             name: true
           }
-        }
+        },
+        publishDate: true
       }
     }); 
     return c.json({"response": allPosts})
@@ -113,6 +116,17 @@ blogRouter.get("/:id", async (c) => {
   const post = await prisma.post.findUnique({
     where: {
         id: id
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      author: {
+        select: {
+          name: true
+        }
+      },
+      publishDate: true
     }
   })
 
